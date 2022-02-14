@@ -1,1 +1,1 @@
-# django-rabbitmq-microservices
+# django-microservices-docker

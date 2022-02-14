@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+
+  microservice_admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python manage.py runserver 0.0.0.0:8000'
+    ports:
+      - 8001:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - postgresql_admin_db
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python consumer.py'
+    depends_on:
+      - postgresql_admin_db
+      - microservice_admin
+
+  postgresql_admin_db:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql_admin_db/data/
+    environment:
+      - POSTGRES_DB=postgres_admin
+      - POSTGRES_USER=postgres_admin
+      - POSTGRES_PASSWORD=postgres_admin
+    ports:
+      - 3330:5432
+volumes:
+  postgres_data:
