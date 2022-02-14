@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+
+  microservice_products:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python manage.py runserver 0.0.0.0:8000'
+    ports:
+      - 8002:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - postgresql_products_db
+  
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'python consumer.py'
+    depends_on:
+      - postgresql_products_db
+      - microservice_products
+
+  postgresql_products_db:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql_products_db/data/
+    environment:
+      - POSTGRES_DB=postgres_products
+      - POSTGRES_USER=postgres_products
+      - POSTGRES_PASSWORD=postgres_products
+    ports:
+      - 3331:5432
+volumes:
+  postgres_data:
