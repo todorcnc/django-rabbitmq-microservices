@@ -1,3 +1,4 @@
 microservice_admin/venv
 microservice_products/venv
 rabbitMQ/
+frontend/node_modules
